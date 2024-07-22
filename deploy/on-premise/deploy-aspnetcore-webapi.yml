@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aspnetcore
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aspnetcore-sample-deployment
+  namespace: aspnetcore
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aspnetcore-sample
+  template:
+    metadata:
+      labels:
+        app: aspnetcore-sample
+    spec:
+      containers:
+      - name: aspnetcore-sample-webapi
+        image: phadkesharanmatrixcomsec/aspnetcore-sample:logging
+        ports:
+        - containerPort: 8080
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: aspnetcore-sample-service
+  namespace: aspnetcore
+spec:
+  selector:
+    app: aspnetcore-sample
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+
